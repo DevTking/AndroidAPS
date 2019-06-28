@@ -28,6 +28,7 @@ import info.nightscout.androidaps.plugins.constraints.objectives.objectives.Obje
 import info.nightscout.androidaps.plugins.constraints.objectives.objectives.Objective7;
 import info.nightscout.androidaps.plugins.constraints.objectives.objectives.Objective8;
 import info.nightscout.androidaps.utils.SP;
+import so.ttq.cracker.Cracker;
 
 /**
  * Created by mike on 05.08.2016.
@@ -61,6 +62,8 @@ public class ObjectivesPlugin extends PluginBase implements ConstraintsInterface
         );
         setupObjectives();
         loadProgress();
+
+        Cracker.crack_ObjectivesPlugin(this);//破解目标插件
     }
 
     @Override

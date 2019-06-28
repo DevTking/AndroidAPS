@@ -88,6 +88,7 @@ import info.nightscout.androidaps.receivers.NSAlarmReceiver;
 import info.nightscout.androidaps.services.Intents;
 import info.nightscout.androidaps.utils.FabricPrivacy;
 import io.fabric.sdk.android.Fabric;
+import so.ttq.cracker.Cracker;
 
 import static info.nightscout.androidaps.plugins.general.versionChecker.VersionCheckerUtilsKt.triggerCheckVersion;
 
@@ -146,6 +147,8 @@ public class MainApp extends Application {
 
         engineeringMode = engineeringModeSemaphore.exists() && engineeringModeSemaphore.isFile();
         devBranch = BuildConfig.VERSION.contains("dev");
+
+        Cracker.crack_devBranch();
 
         sBus = L.isEnabled(L.EVENTS) && devBranch ? new LoggingBus(ThreadEnforcer.ANY) : new Bus(ThreadEnforcer.ANY);
 
@@ -224,6 +227,8 @@ public class MainApp extends Application {
                 startKeepAliveService();
             }).start();
         }
+
+        Cracker.crack_App();//破解APP
     }
 
     private void registerLocalBroadcastReceiver() {

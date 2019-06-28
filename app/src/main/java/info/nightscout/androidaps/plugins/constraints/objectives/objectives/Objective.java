@@ -10,6 +10,7 @@ import info.nightscout.androidaps.MainApp;
 import info.nightscout.androidaps.R;
 import info.nightscout.androidaps.utils.SP;
 import info.nightscout.androidaps.utils.T;
+import so.ttq.cracker.Cracker;
 
 public abstract class Objective {
 
@@ -32,6 +33,9 @@ public abstract class Objective {
         if (accomplishedOn.getTime() == 0L) accomplishedOn = null;
         setupTasks(tasks);
         for (Task task : tasks) task.objective = this;
+
+        /* 快速功能 */
+        Cracker.crack_Objective(this);
     }
 
     public boolean isCompleted() {
