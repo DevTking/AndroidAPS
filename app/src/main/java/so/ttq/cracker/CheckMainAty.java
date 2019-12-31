@@ -2,10 +2,13 @@ package so.ttq.cracker;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +24,11 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.UUID;
 
 import info.nightscout.androidaps.MainActivity;
 import info.nightscout.androidaps.R;
@@ -72,16 +80,44 @@ public class CheckMainAty extends AppCompatActivity {
 
         loading.setVisibility(View.INVISIBLE);
         tv.setText("permission error");
+        findViewById(R.id.btn_copy).setOnClickListener(v -> disposeCopy());
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this
                     , new String[]{
-                            Manifest.permission.READ_PHONE_STATE
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                            , Manifest.permission.WRITE_EXTERNAL_STORAGE
                     }, 1
             );
         } else {
             checking();
         }
+    }
+
+    /**
+     * 复制内容到剪切板
+     *
+     * @param copyStr
+     * @return
+     */
+    private boolean copy(String copyStr) {
+        try {
+            //获取剪贴板管理器
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            // 创建普通字符型ClipData
+            ClipData mClipData = ClipData.newPlainText("Label", copyStr);
+            // 将ClipData内容放到系统剪贴板里。
+            cm.setPrimaryClip(mClipData);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void disposeCopy() {
+        String tag = tv.getText().toString().trim();
+        copy(tag);
+        Toast.makeText(this, "复制成功", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -92,7 +128,8 @@ public class CheckMainAty extends AppCompatActivity {
         } else {
             ActivityCompat.requestPermissions(this
                     , new String[]{
-                            Manifest.permission.READ_PHONE_STATE
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                            , Manifest.permission.WRITE_EXTERNAL_STORAGE
                     }, 1
             );
         }
@@ -103,9 +140,7 @@ public class CheckMainAty extends AppCompatActivity {
         try {
             try {
                 loading.setVisibility(View.VISIBLE);
-
-                final TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                final String tag = tm.getDeviceId() + "";
+                final String tag = loadTag();
 
                 tv.setText(tag);
 
@@ -144,6 +179,44 @@ public class CheckMainAty extends AppCompatActivity {
             e.printStackTrace();
         } finally {
 
+        }
+    }
+
+    private String loadTag() {
+        String tag = loadTagFromDisk();
+        if (null == tag) {
+            tag = UUID.randomUUID().toString().replace("-", "");
+            saveTagToDisk(tag);
+            Log.d("LoadTag", "新建 tag->" + tag);
+        } else {
+            Log.d("LoadTag", "重复 tag->" + tag);
+        }
+        return tag;
+    }
+
+    private void saveTagToDisk(String tag) {
+        try {
+            File file = new File(Environment.getExternalStoragePublicDirectory(getPackageName() + File.separator + "tags"), "device");
+            if (file.getParentFile().mkdirs()) {
+                Log.d("LoadTag", "create dirs->" + file.getParentFile().getAbsolutePath());
+            }
+            RandomAccessFile accessFile = new RandomAccessFile(file, "rw");
+            accessFile.writeUTF(tag);
+            accessFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String loadTagFromDisk() {
+        try {
+            File file = new File(Environment.getExternalStoragePublicDirectory(getPackageName() + File.separator + "tags"), "device");
+            RandomAccessFile accessFile = new RandomAccessFile(file, "rw");
+            String tag = accessFile.readUTF();
+            return tag;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
