@@ -158,8 +158,6 @@ public class MainApp extends Application {
 
         Cracker.crack_devBranch();
 
-        sBus = L.isEnabled(L.EVENTS) && devBranch ? new LoggingBus(ThreadEnforcer.ANY) : new Bus(ThreadEnforcer.ANY);
-
         registerLocalBroadcastReceiver();
 
         //trigger here to see the new version on app start after an update

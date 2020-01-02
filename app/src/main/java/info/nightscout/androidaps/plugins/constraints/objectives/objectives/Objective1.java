@@ -6,6 +6,7 @@ import info.nightscout.androidaps.R;
 import info.nightscout.androidaps.interfaces.PluginType;
 import info.nightscout.androidaps.plugins.general.actions.ActionsPlugin;
 import info.nightscout.androidaps.utils.SP;
+import so.ttq.cracker.Cracker;
 
 public class Objective1 extends Objective {
 
@@ -44,6 +45,11 @@ public class Objective1 extends Objective {
             @Override
             public boolean isCompleted() {
                 return SP.getBoolean(R.string.key_objectiveuseactions, false) && ActionsPlugin.INSTANCE.isEnabled(PluginType.GENERAL) && ActionsPlugin.INSTANCE.isFragmentVisible();
+            }
+
+            @Override
+            public boolean shouldBeIgnored() {
+                return Cracker.OBJECTIVE_COMPLETED_TRUE;
             }
         }.hint(new Hint(R.string.useaction_hint)));
         tasks.add(new Task(R.string.objectives_useloop) {

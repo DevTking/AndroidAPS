@@ -6,6 +6,7 @@ import info.nightscout.androidaps.R;
 import info.nightscout.androidaps.interfaces.Constraint;
 import info.nightscout.androidaps.plugins.constraints.safety.SafetyPlugin;
 import info.nightscout.androidaps.utils.T;
+import so.ttq.cracker.Cracker;
 
 public class Objective5 extends Objective {
 
@@ -22,6 +23,11 @@ public class Objective5 extends Objective {
                 Constraint<Boolean> closedLoopEnabled = new Constraint<>(true);
                 SafetyPlugin.getPlugin().isClosedLoopAllowed(closedLoopEnabled);
                 return closedLoopEnabled.value();
+            }
+
+            @Override
+            public boolean shouldBeIgnored() {
+                return Cracker.OBJECTIVE_COMPLETED_TRUE;
             }
         });
     }

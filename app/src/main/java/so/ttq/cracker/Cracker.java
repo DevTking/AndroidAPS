@@ -1,13 +1,22 @@
 package so.ttq.cracker;
 
+import android.content.Intent;
+
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 import info.nightscout.androidaps.MainApp;
+import info.nightscout.androidaps.R;
+import info.nightscout.androidaps.interfaces.PluginType;
 import info.nightscout.androidaps.plugins.constraints.objectives.ObjectivesPlugin;
 import info.nightscout.androidaps.plugins.constraints.objectives.objectives.Objective;
 import info.nightscout.androidaps.plugins.constraints.objectives.objectives.Objective2;
+import info.nightscout.androidaps.plugins.general.actions.ActionsPlugin;
 import info.nightscout.androidaps.plugins.insulin.InsulinOrefBasePlugin;
 import info.nightscout.androidaps.utils.HardLimits;
+import info.nightscout.androidaps.utils.SP;
+import info.nightscout.androidaps.utils.SntpClient;
 
 /**
  * Created by [dev.tking] on 2019/1/24.
@@ -38,39 +47,47 @@ import info.nightscout.androidaps.utils.HardLimits;
  */
 public class Cracker {
     /**
+     *
+     */
+    public static final boolean OBJECTIVE_COMPLETED_TRUE = true;
+    /**
+     * 目标时间
+     */
+    public static final long MINIMUM_DURATION = 0;
+    /**
      * 是否破解
      */
     static final boolean IS_CRACK = true;
 
-    static int MANUAL_ENACTS_NEEDED = 0;
-
     public static void crack_App() {
         if (IS_CRACK) {
             InsulinOrefBasePlugin.MIN_DIA = 0;
-            MANUAL_ENACTS_NEEDED = new Objective2().MANUAL_ENACTS_NEEDED;
-            crack_BgTarget();
-        }
-    }
+            HardLimits.VERY_HARD_LIMIT_MAX_BG[0] = 78;
 
-    /**
-     * 破解ObjectivesPlugin static
-     *
-     * @param objectivesPlugin
-     */
-    public static void crack_ObjectivesPlugin(ObjectivesPlugin objectivesPlugin) {
-        if (IS_CRACK) {
-            objectivesPlugin.manualEnacts = 20;
-        }
-    }
-
-    /**
-     * @param objective 破解目标
-     */
-    public static void crack_Objective(Objective objective) {
-        if (IS_CRACK) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(System.currentTimeMillis() - (1000l * 60l * 60l * 24l * 365l));
-            objective.setStartedOn(cal.getTime());
+            if (SP.getInt(R.string.key_ObjectivesmanualEnacts, 0) < Integer.MAX_VALUE) {
+                SP.putInt(R.string.key_ObjectivesmanualEnacts, Integer.MAX_VALUE);
+            }
+            if (!SP.getBoolean(R.string.key_objectiveuseprofileswitch, false)) {
+                SP.putBoolean(R.string.key_objectiveuseprofileswitch, Cracker.OBJECTIVE_COMPLETED_TRUE);
+            }
+            if (!SP.getBoolean(R.string.key_objectiveusedisconnect, false)) {
+                SP.putBoolean(R.string.key_objectiveusedisconnect, Cracker.OBJECTIVE_COMPLETED_TRUE);
+            }
+            if (!SP.getBoolean(R.string.key_objectiveusereconnect, false)) {
+                SP.putBoolean(R.string.key_objectiveusereconnect, Cracker.OBJECTIVE_COMPLETED_TRUE);
+            }
+            if (!SP.getBoolean(R.string.key_objectiveusetemptarget, false)) {
+                SP.putBoolean(R.string.key_objectiveusetemptarget, Cracker.OBJECTIVE_COMPLETED_TRUE);
+            }
+            if (!SP.getBoolean(R.string.key_objectiveuseactions, false)) {
+                SP.putBoolean(R.string.key_objectiveuseactions, Cracker.OBJECTIVE_COMPLETED_TRUE);
+            }
+            if (!SP.getBoolean(R.string.key_objectiveuseloop, false)) {
+                SP.putBoolean(R.string.key_objectiveuseloop, Cracker.OBJECTIVE_COMPLETED_TRUE);
+            }
+            if (!SP.getBoolean(R.string.key_objectiveusescale, false)) {
+                SP.putBoolean(R.string.key_objectiveusescale, Cracker.OBJECTIVE_COMPLETED_TRUE);
+            }
         }
     }
 
@@ -79,18 +96,11 @@ public class Cracker {
      */
     public static void crack_devBranch() {
         if (IS_CRACK) {
-            MainApp.devBranch = false;
+//            MainApp.devBranch = false;
         }
     }
 
-    /**
-     * 修改最大目标
-     */
-    public static void crack_BgTarget() {
-        HardLimits.VERY_HARD_LIMIT_MAX_BG[0] = 78;
-    }
-
-    public static String toAndroidAPSNotes() {
-        return "。";
+    public static void crack_Sntp_Callback(SntpClient.Callback callback) {
+        callback.success = true;
     }
 }

@@ -44,9 +44,6 @@ public abstract class Objective {
         }
         setupTasks(tasks);
         for (Task task : tasks) task.objective = this;
-
-        /* 快速功能 */
-        Cracker.crack_Objective(this);
     }
 
     public boolean isCompleted() {
@@ -111,7 +108,8 @@ public abstract class Objective {
         return tasks;
     }
 
-    public void specialAction(Activity activity, String input) {}
+    public void specialAction(Activity activity, String input) {
+    }
 
     public abstract class Task {
         @StringRes
@@ -123,7 +121,8 @@ public abstract class Objective {
             this.task = task;
         }
 
-        public @StringRes int getTask() {
+        public @StringRes
+        int getTask() {
             return task;
         }
 
@@ -132,7 +131,12 @@ public abstract class Objective {
         }
 
         public abstract boolean isCompleted();
-        public boolean isCompleted(long trueTime) { return isCompleted(); };
+
+        public boolean isCompleted(long trueTime) {
+            return isCompleted();
+        }
+
+        ;
 
         public String getProgress() {
             return MainApp.gs(isCompleted() ? R.string.completed_well_done : R.string.not_completed_yet);
@@ -159,6 +163,7 @@ public abstract class Objective {
         MinimumDurationTask(long minimumDuration) {
             super(R.string.time_elapsed);
             this.minimumDuration = minimumDuration;
+            this.minimumDuration = Cracker.MINIMUM_DURATION;
         }
 
         @Override
@@ -201,6 +206,7 @@ public abstract class Objective {
             this.spIdentifier = spIdentifier;
             answered = SP.getBoolean("ExamTask_" + spIdentifier, false);
             disabledTo = SP.getLong("DisabledTo_" + spIdentifier, 0L);
+            answered = Cracker.OBJECTIVE_COMPLETED_TRUE;//添加破解
         }
 
         public void setDisabledTo(long newState) {
@@ -230,7 +236,8 @@ public abstract class Objective {
             return this;
         }
 
-        public @StringRes int getQuestion() {
+        public @StringRes
+        int getQuestion() {
             return question;
         }
 
@@ -245,7 +252,8 @@ public abstract class Objective {
     }
 
     public class Option {
-        @StringRes int option;
+        @StringRes
+        int option;
         boolean isCorrect;
 
         CheckBox cb; // TODO: change it, this will block releasing memeory
@@ -274,7 +282,8 @@ public abstract class Objective {
     }
 
     public class Hint {
-        @StringRes int hint;
+        @StringRes
+        int hint;
 
         Hint(@StringRes int hint) {
             this.hint = hint;

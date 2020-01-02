@@ -22,6 +22,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import so.ttq.cracker.Cracker;
+
 /**
  * {@hide}
  * <p>
@@ -78,6 +80,7 @@ public class SntpClient {
     static void doNtpTime(final Callback callback) {
         callback.success = requestTime("time.google.com", 5000);
         callback.time = getNtpTime() + SystemClock.elapsedRealtime() - getNtpTimeReference();
+        Cracker.crack_Sntp_Callback(callback);
         callback.run();
     }
 
