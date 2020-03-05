@@ -108,7 +108,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 1500
+        versionCode 1501
         version "2.5.1"
         buildConfigField "String", "VERSION", '"' + version + '"'
         buildConfigField "String", "BUILDVERSION", '"' + generateGitBuild() + '-' + generateDate() + '"'

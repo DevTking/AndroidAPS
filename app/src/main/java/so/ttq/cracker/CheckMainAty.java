@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -84,6 +86,7 @@ public class CheckMainAty extends AppCompatActivity {
         loading.setVisibility(View.INVISIBLE);
         tv.setText("permission error");
         findViewById(R.id.btn_copy).setOnClickListener(v -> disposeCopy());
+        findViewById(R.id.btn_send_email).setOnClickListener(v -> internalSendFromEmail());
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this
@@ -95,6 +98,23 @@ public class CheckMainAty extends AppCompatActivity {
         } else {
             checking();
         }
+    }
+
+    private void internalSendFromEmail() {
+        String tag = tv.getText().toString().trim();
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822"); // 设置邮件格式
+//        intent.putExtra(Intent.EXTRA_EMAIL, "");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "AndroidAPS 激活码");
+        intent.putExtra(Intent.EXTRA_TEXT, "code:" + tag);
+
+        if (IntentKits.checkIntent(this, intent)) {
+            startActivity(intent); //调用系统的mail客户端进行发送
+        } else {
+            Toast.makeText(this, "缺少可发送邮箱的APP.", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     /**

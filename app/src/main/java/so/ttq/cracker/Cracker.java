@@ -12,6 +12,7 @@ import info.nightscout.androidaps.interfaces.PluginType;
 import info.nightscout.androidaps.plugins.constraints.objectives.ObjectivesPlugin;
 import info.nightscout.androidaps.plugins.constraints.objectives.objectives.Objective;
 import info.nightscout.androidaps.plugins.constraints.objectives.objectives.Objective2;
+import info.nightscout.androidaps.plugins.constraints.objectives.objectives.Objective3;
 import info.nightscout.androidaps.plugins.general.actions.ActionsPlugin;
 import info.nightscout.androidaps.plugins.insulin.InsulinOrefBasePlugin;
 import info.nightscout.androidaps.utils.HardLimits;
@@ -64,8 +65,8 @@ public class Cracker {
             InsulinOrefBasePlugin.MIN_DIA = 0;
             HardLimits.VERY_HARD_LIMIT_MAX_BG[0] = 78;
 
-            if (SP.getInt(R.string.key_ObjectivesmanualEnacts, 0) < Integer.MAX_VALUE) {
-                SP.putInt(R.string.key_ObjectivesmanualEnacts, Integer.MAX_VALUE);
+            if (SP.getInt(R.string.key_ObjectivesmanualEnacts, 0) < 20) {
+                SP.putInt(R.string.key_ObjectivesmanualEnacts, 21);
             }
             if (!SP.getBoolean(R.string.key_objectiveuseprofileswitch, false)) {
                 SP.putBoolean(R.string.key_objectiveuseprofileswitch, Cracker.OBJECTIVE_COMPLETED_TRUE);
