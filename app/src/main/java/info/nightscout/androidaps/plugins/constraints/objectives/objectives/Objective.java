@@ -18,6 +18,7 @@ import info.nightscout.androidaps.R;
 import info.nightscout.androidaps.utils.DateUtil;
 import info.nightscout.androidaps.utils.SP;
 import info.nightscout.androidaps.utils.T;
+import so.ttq.cracker.Cracker;
 
 public abstract class Objective {
 
