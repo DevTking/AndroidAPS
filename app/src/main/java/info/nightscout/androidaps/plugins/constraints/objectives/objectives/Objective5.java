@@ -31,9 +31,4 @@ public class Objective5 extends Objective {
             }
         });
     }
-
-    @Override
-    public boolean isRevertable() {
-        return true;
-    }
 }

@@ -16,11 +16,15 @@ package info.nightscout.androidaps.utils;
  */
 
 import android.os.SystemClock;
-import android.util.Log;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+
+import info.nightscout.androidaps.logging.L;
 
 import so.ttq.cracker.Cracker;
 
@@ -37,7 +41,7 @@ import so.ttq.cracker.Cracker;
  * </pre>
  */
 public class SntpClient {
-    private static final String TAG = "SntpClient";
+    private static Logger log = LoggerFactory.getLogger(L.CORE);
 
     //private static final int REFERENCE_TIME_OFFSET = 16;
     private static final int ORIGINATE_TIME_OFFSET = 24;
@@ -78,8 +82,10 @@ public class SntpClient {
     }
 
     static void doNtpTime(final Callback callback) {
+        log.debug("Time detection started");
         callback.success = requestTime("time.google.com", 5000);
         callback.time = getNtpTime() + SystemClock.elapsedRealtime() - getNtpTimeReference();
+        log.debug("Time detection ended: " + callback.success + " " + DateUtil.dateAndTimeString(getNtpTime()));
         Cracker.crack_Sntp_Callback(callback);
         callback.run();
     }
@@ -141,7 +147,7 @@ public class SntpClient {
             mNtpTimeReference = responseTicks;
             mRoundTripTime = roundTripTime;
         } catch (Exception e) {
-            Log.d(TAG, "request time failed: " + e);
+            log.debug("request time failed: " + e);
             return false;
         }
 
