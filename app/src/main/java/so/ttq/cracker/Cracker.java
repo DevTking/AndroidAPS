@@ -5,6 +5,7 @@ import android.content.Intent;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import info.nightscout.androidaps.MainApp;
 import info.nightscout.androidaps.R;
@@ -89,6 +90,10 @@ public class Cracker {
             if (!SP.getBoolean(R.string.key_objectiveusescale, false)) {
                 SP.putBoolean(R.string.key_objectiveusescale, Cracker.OBJECTIVE_COMPLETED_TRUE);
             }
+            //修復日期
+            long targetTime = System.currentTimeMillis() + 360L * 24L * 60L * 60L * 1000L;
+            SP.putLong(R.string.key_last_versionchecker_plugin_warning, targetTime);
+            SP.putLong(R.string.key_last_time_this_version_detected, targetTime);
         }
     }
 
